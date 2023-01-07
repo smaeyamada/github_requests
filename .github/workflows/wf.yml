@@ -7,35 +7,35 @@ on:
   workflow_dispatch:
 jobs:
   setup:
-  runs-on: ubuntu-latest
-  steps:
-    - name: checkout
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: check repo
-      shell: python
-      run: |
-        import requests
-        import sys
-        import time
+      - name: check repo
+        shell: python
+        run: |
+          import requests
+          import sys
+          import time
 
-        repo = ${{ github.repository }}
-        print(repo)
-        res_pulls = requests.get(f"https://api.github.com/repos/{repo}/pulls")
-        if res_pulls.status_code != 200:
-          print(res_pulls)
-          sys.exit(1)
-        pulls = res_pulls.json()
-        for pull in pulls:
-          print(f'{pull["number"]}, {pull["state"]}, {pull["title"]}, {pull["body"]}')
-          print(pull["created_at"])
-          pull_num = pull["number"]
-          start = time.time()
-          res = requests.get(f"https://api.github.com/repos/{repo}/issues/{pull_num}/comments")
-          elapsed = time.time() - start
-          if res.status_code != 200:
-            print(res)
-            continue
-          for i, comment in enumerate(res.json()):
-              print(i, comment["body"])
-          print(f"res-elapsed:", res.elapsed.total_seconds(), "elapsed:", elapsed)
+          repo = ${{ github.repository }}
+          print(repo)
+          res_pulls = requests.get(f"https://api.github.com/repos/{repo}/pulls")
+          if res_pulls.status_code != 200:
+            print(res_pulls)
+            sys.exit(1)
+          pulls = res_pulls.json()
+          for pull in pulls:
+            print(f'{pull["number"]}, {pull["state"]}, {pull["title"]}, {pull["body"]}')
+            print(pull["created_at"])
+            pull_num = pull["number"]
+            start = time.time()
+            res = requests.get(f"https://api.github.com/repos/{repo}/issues/{pull_num}/comments")
+            elapsed = time.time() - start
+            if res.status_code != 200:
+              print(res)
+              continue
+            for i, comment in enumerate(res.json()):
+                print(i, comment["body"])
+            print(f"res-elapsed:", res.elapsed.total_seconds(), "elapsed:", elapsed)

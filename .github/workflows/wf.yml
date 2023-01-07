@@ -22,7 +22,7 @@ jobs:
           repo = "${{ github.repository }}"
           res_pulls = requests.get(f"https://api.github.com/repos/{repo}/pulls", params={"per_page": 100})
           if res_pulls.status_code != 200:
-            print(res_pulls)
+            print("pulls:", res_pulls)
             sys.exit(1)
           pulls = res_pulls.json()
           for pull in pulls:
@@ -31,7 +31,7 @@ jobs:
             res = requests.get(f"https://api.github.com/repos/{repo}/issues/{pull_num}/comments", params={"per_page": 100})
             elapsed = time.time() - start
             if res.status_code != 200:
-              print(res)
+              print("comments:", res)
               continue
             ela1 = res.elapsed.total_seconds()
             ela2 = elapsed - ela1

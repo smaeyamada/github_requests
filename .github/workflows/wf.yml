@@ -1,0 +1,11 @@
+name: Check repository
+on:
+  # push:
+  #   branches: ['main']
+  workflow_dispatch:
+jobs:
+  setup:
+  runs-on: ubuntu-latest
+  steps:
+    - name: checkout
+      uses: actions/checkout@v3

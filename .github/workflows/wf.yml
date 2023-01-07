@@ -19,7 +19,7 @@ jobs:
           import sys
           import time
 
-          repo = ${{ github.repository }}
+          repo = "${{ github.repository }}"
           print(repo)
           res_pulls = requests.get(f"https://api.github.com/repos/{repo}/pulls")
           if res_pulls.status_code != 200:

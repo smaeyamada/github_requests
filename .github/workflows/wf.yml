@@ -27,8 +27,6 @@ jobs:
             sys.exit(1)
           pulls = res_pulls.json()
           for pull in pulls:
-            print(f'{pull["number"]}, {pull["state"]}, {pull["title"]}, {pull["body"]}')
-            print(pull["created_at"])
             pull_num = pull["number"]
             start = time.time()
             res = requests.get(f"https://api.github.com/repos/{repo}/issues/{pull_num}/comments")
@@ -36,6 +34,6 @@ jobs:
             if res.status_code != 200:
               print(res)
               continue
-            for i, comment in enumerate(res.json()):
-                print(i, comment["body"])
-            print(f"res-elapsed:", res.elapsed.total_seconds(), "elapsed:", elapsed)
+            ela1 = res.elapsed.total_seconds()
+            ela2 = elapsed - ela1
+            print(f'{pull["number"]}, {pull["title"]}, {len(res.json())}, {ela1}, {ela2}')

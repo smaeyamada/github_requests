@@ -1,0 +1,38 @@
+name: Check repository
+on:
+  # push:
+  #   branches: ['main']
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: check repo
+        shell: python
+        run: |
+          import requests
+          import sys
+          import time
+
+          repo = "${{ github.repository }}"
+          res_pulls = requests.get(f"https://api.github.com/repos/{repo}/pulls", params={"per_page": 100})
+          if res_pulls.status_code != 200:
+            print("pulls:", res_pulls)
+            sys.exit(1)
+          pulls = res_pulls.json()
+          for pull in pulls:
+            pull_num = pull["number"]
+            start = time.time()
+            res = requests.get(f"https://api.github.com/repos/{repo}/issues/{pull_num}/comments", params={"per_page": 100})
+            elapsed = time.time() - start
+            if res.status_code != 200:
+              print("comments:", res)
+              continue
+            ela1 = res.elapsed.total_seconds()
+            ela2 = elapsed - ela1
+            print(f'{pull["number"]}, {pull["title"]}, {pull["created_at"]}, {len(res.json())}, {ela1}, {ela2}')
